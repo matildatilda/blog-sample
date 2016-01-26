@@ -7,29 +7,43 @@ class UsersModel extends DbManager
     {
         if($this->dbh === null) return;
         
-        $sql = "SELECT COUNT(*) AS CNT FROM users WHERE email='".$user."' AND password='".$password."';";
-        
-        $rows = $this->dbh->query($sql);
-        $res = $rows->fetch(PDO::FETCH_ASSOC);
-        
-        $userInfo = array();
+        //ユーザー情報を取得
+        $sql = "SELECT * FROM users WHERE email=:user";
 
-        if($res['CNT'] == 1)
+        try
         {
-            $userInfo = array(
-                'user'=>$user
-            );        
-        }
-        else
-        {
-            $userInfo = array(
-                'user'=>''
-            );        
-        }
-        
-        header('Content-type: application/json');
-        echo json_encode($userInfo);        
+            $stmt = $this->dbh->prepare($sql);
 
+            $stmt->bindValue(":user", $user, PDO::PARAM_STR);
+
+            $stmt->execute();
+            $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+            $userInfo = array();
+            
+            //パスワードを比較
+            if($res['password'] == $password)
+            {
+                session_regenerate_id(true);
+                               
+                $userInfo = array(
+                    'user'=>$user
+                );
+            }
+            else
+            {
+                $userInfo = array(
+                    'user'=>''
+                );        
+            }
+                
+            header('Content-type: application/json');
+            echo json_encode($userInfo);
+        }
+        catch(PDOException $e)
+        {
+            echo "login failed.";
+        }
     }
     
 }

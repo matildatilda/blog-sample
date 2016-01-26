@@ -3,7 +3,7 @@
     
     $user = $_POST['user'];
     $password = $_POST['password'];
-    
+
     $model = new UsersModel();
     
     $model->ConnectDb();

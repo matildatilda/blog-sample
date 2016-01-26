@@ -12,7 +12,7 @@ class DbManager
         try
         {
             $this->dbh = new PDO($dsn, $user, $password);
-            $this->dbh->query('SET NAMES utf8');
+            $this->dbh->query("SET NAMES utf8");
 
         }
         catch (PDOException $e)

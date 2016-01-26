@@ -11,7 +11,7 @@
 	});
 
 	app.factory('loginService', function($http){
-		var user = 'matildatilda@sample.com';
+		var user = '';
 
 		return {
 			getUser: function(){ return user; },
@@ -27,15 +27,21 @@
 
 				$http.post('php/loginUser.php', $.param(loginInfo), config)
 				.success(function(data, status){
-					user = data.user;	
+					user = data.user;
 				})
 				.error(function(data, status){
-					user = '';	
+					user = '';
 				});
 			},
 			logout: function()
 			{
-				user = '';
+				$http.post('php/logoutUser.php')
+				.success(function(data, status)
+				{
+					user = '';
+				})
+				.error(function(data, status){
+				});
 			}	
 		};	
 	});
@@ -146,7 +152,7 @@
 
 		this.getMaxNumOfBlogs = function()
 		{
-			var url = 'php/getMaxNumOfBlogs.php?user='+loginService.getUser();
+			var url = 'php/getMaxNumOfBlogs.php?user=matildatilda@sample.com';
 
 			$http.get(url)
 			.success(function(data, status){
